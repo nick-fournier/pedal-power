@@ -77,6 +77,8 @@ Pedal Power is an IoT system for monitoring and analyzing bicycle pedal power ou
 
 ## Quick Start
 
+**See [INSTALL.md](INSTALL.md) for complete installation guide.**
+
 ### Firmware Setup
 
 See [firmware/README.md](firmware/README.md) for detailed instructions.

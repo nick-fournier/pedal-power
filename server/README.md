@@ -246,14 +246,28 @@ python manage.py runserver 0.0.0.0:8000
 
 ### Testing the Stack
 
-Send test MQTT messages:
+**Send test MQTT messages manually:**
 
 ```bash
 mosquitto_pub -h localhost -t bike/telemetry \
   -m '{"dev":"bike1","seq":1,"v":12.5,"i":2.0,"p":25.0}'
 ```
 
-Check database:
+**Or use the test publisher script:**
+
+```bash
+cd server
+python test_mqtt_publisher.py --broker localhost --rate 10 --duration 60
+
+# Options:
+# --broker: MQTT broker address (default: localhost)
+# --rate: Publish rate in Hz (default: 10)
+# --duration: Duration in seconds (default: 60, 0 for infinite)
+# --power-on: Simulate continuous power (else random on/off periods)
+# --device: Device ID (default: bike1)
+```
+
+**Check database:**
 
 ```bash
 docker-compose exec postgres psql -U pedalpower -d pedalpower \
