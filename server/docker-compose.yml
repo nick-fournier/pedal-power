@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: pedalpower-postgres
+    environment:
+      POSTGRES_DB: pedalpower
+      POSTGRES_USER: pedalpower
+      POSTGRES_PASSWORD: pedalpower
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pedalpower"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pedalpower
+
+  # Mosquitto MQTT Broker
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: pedalpower-mosquitto
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+    ports:
+      - "1883:1883"
+    networks:
+      - pedalpower
+
+  # MQTT Ingestor
+  mqtt_ingestor:
+    build:
+      context: ./mqtt_ingestor
+      dockerfile: Dockerfile
+    container_name: pedalpower-ingestor
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mosquitto:
+        condition: service_started
+    environment:
+      MQTT_BROKER: mosquitto
+      MQTT_PORT: 1883
+      MQTT_TOPIC: bike/telemetry
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: pedalpower
+      DB_USER: pedalpower
+      DB_PASSWORD: pedalpower
+    restart: unless-stopped
+    networks:
+      - pedalpower
+
+  # Django Example Project with Pedal Power App
+  django_api:
+    build:
+      context: .
+      dockerfile: example_project/Dockerfile
+    container_name: pedalpower-api
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DEBUG: "False"
+      SECRET_KEY: "change-this-in-production"
+      ALLOWED_HOSTS: "*"
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: pedalpower
+      DB_USER: pedalpower
+      DB_PASSWORD: pedalpower
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks:
+      - pedalpower
+
+networks:
+  pedalpower:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  mosquitto_data:
+  mosquitto_log:

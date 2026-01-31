@@ -1,0 +1,64 @@
+[project]
+name = "django-pedalpower"
+version = "0.1.0"
+description = "Django app for Pedal Power bike monitoring - MQTT telemetry ingestion, API, and dashboard"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+authors = [
+    {name = "Pedal Power", email = "pedal-power@example.com"}
+]
+keywords = ["django", "mqtt", "iot", "bike", "power", "monitoring"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Framework :: Django",
+    "Framework :: Django :: 4.2",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "django>=4.2,<5.0",
+    "djangorestframework>=3.14,<4.0",
+    "psycopg2-binary>=2.9,<3.0",
+    "django-cors-headers>=4.0,<5.0",
+    "paho-mqtt>=1.6.1,<2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-django>=4.5",
+    "black>=23.0",
+    "ruff>=0.1",
+]
+server = [
+    "gunicorn>=21.0,<22.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/nick-fournier/pedal-power"
+Repository = "https://github.com/nick-fournier/pedal-power"
+Documentation = "https://github.com/nick-fournier/pedal-power/blob/main/README.md"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["pedalpower"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "tests.settings"
+python_files = ["test_*.py", "*_test.py"]
