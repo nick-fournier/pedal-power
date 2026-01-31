@@ -1,0 +1,33 @@
+# Firmware Configuration Example
+# Copy this to config.h and edit for your setup
+
+#ifndef CONFIG_H
+#define CONFIG_H
+
+// WiFi Configuration
+#define WIFI_SSID "Your_WiFi_Network"
+#define WIFI_PASSWORD "Your_WiFi_Password"
+
+// MQTT Broker Configuration
+#define MQTT_BROKER_IP "192.168.1.100"  // IP address of your MQTT broker
+#define MQTT_BROKER_PORT 1883
+
+// Device Configuration
+#define DEVICE_ID "bike1"  // Unique identifier for this device
+
+// Sampling Configuration
+#define ADC_SAMPLE_RATE_HZ 100    // Sample ADC at 100 Hz
+#define MQTT_PUBLISH_RATE_HZ 10   // Publish telemetry at 10 Hz (5-10 Hz recommended)
+
+// Hardware Pin Configuration
+#define PWM_GPIO_PIN 15           // GPIO pin for PWM control output
+
+// ADC Channel Configuration (fixed on Pico)
+// ADC0 = GPIO26 (Voltage sensor)
+// ADC1 = GPIO27 (Current sensor)
+
+// Calibration - adjust these based on your sensors
+#define VOLTAGE_SCALE 11.0f  // Voltage divider ratio for 0-36V → 0-3.3V
+#define CURRENT_SCALE 10.0f  // Current sensor scaling for 0-10A → 0-3.3V
+
+#endif // CONFIG_H

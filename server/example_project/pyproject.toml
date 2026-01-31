@@ -1,0 +1,17 @@
+[project]
+name = "pedalpower-server"
+version = "0.1.0"
+description = "Example Django project using the Pedal Power app"
+requires-python = ">=3.11"
+
+dependencies = [
+    "django>=4.2,<5.0",
+    "django-pedalpower",
+    "gunicorn>=21.0,<22.0",
+]
+
+[tool.uv]
+dev-dependencies = [
+    "black>=23.0",
+    "ruff>=0.1",
+]
